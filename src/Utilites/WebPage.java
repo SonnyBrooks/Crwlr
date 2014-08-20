@@ -27,7 +27,7 @@ public class WebPage {
         Runtime.getRuntime().exec(commands);
 
         DefaultSelenium selenium = new DefaultSelenium("localhost", 4444,
-                "*firefox", "http://www.testingexcellence.com");
+                "*googlechrome", "http://www.testingexcellence.com");
         selenium.start();
         selenium.open(sURL);
         selenium.windowMaximize();
@@ -38,12 +38,12 @@ public class WebPage {
         robot.keyPress(KeyEvent.VK_S);
         robot.keyRelease(KeyEvent.VK_S);
         robot.keyRelease(KeyEvent.VK_CONTROL);
-        Thread.sleep(500);
+        Thread.sleep(1000);
         robot.keyPress(KeyEvent.VK_ALT);
         robot.keyPress(KeyEvent.VK_F4);
         robot.keyRelease(KeyEvent.VK_ALT);
         robot.keyRelease(KeyEvent.VK_F4);
-        Thread.sleep(500);
+        Thread.sleep(1000);
         robot.keyPress(KeyEvent.VK_ALT);
         robot.keyPress(KeyEvent.VK_F4);
         robot.keyRelease(KeyEvent.VK_ALT);

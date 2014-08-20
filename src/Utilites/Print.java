@@ -51,8 +51,8 @@ public class Print {
 
     public static void writelnWithTimeStamp(String sMsg, PrintWriter pwWriter){
         pwWriter.write(Calendar.DATE + " " + Calendar.getInstance().getTime() + ": " + sMsg);
-        System.out.println(Calendar.DATE + " " + Calendar.getInstance().getTime() + ": " + sMsg);
         pwWriter.flush();
+        System.out.println(Calendar.DATE + " " + Calendar.getInstance().getTime() + ": " + sMsg);
     }
 
     public static void writeERRWithTimeStamp(String sMsg, Exception ex, PrintWriter pwWriter){
