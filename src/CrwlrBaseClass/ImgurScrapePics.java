@@ -51,7 +51,7 @@ public class ImgurScrapePics extends Scraper {
                 sImageURL = image.attr("src").replace("//", "").replace(".jpg", "");
                 if(sImageURL.indexOf("pixel.quantserve.com") == -1 && sImageURL.indexOf("/images/loaders/ddddd1_181817/48.gif") == -1){
                     imagesScraped.add(sImageURL);
-                    //WebPage.getImage(sImageURL + ".jpg");
+                    WebPage.getImage("http://" + sImageURL + ".jpg");
                     iNumImages++;
                     iNumElements++;
                     Print.writelnWithTimeStamp(iNumElements + ": Added " + sImageURL, pwWriter);
