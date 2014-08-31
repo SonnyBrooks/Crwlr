@@ -2,16 +2,12 @@ package CrwlrBaseClass;
 
 import Utilites.Print;
 import Utilites.WebPage;
-import org.apache.commons.io.FileUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import javax.imageio.ImageIO;
-import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URL;
-import java.util.ArrayList;
 
 /**
  * Created by Andy on 8/18/2014.
@@ -23,14 +19,18 @@ public class ImgurScrapePics extends Scraper {
 
     public ImgurScrapePics(PrintWriter pwWriter, String sURL){
         try {
-            this.pwWriter = pwWriter;
-            if(sURL.indexOf("imgur") == -1){
+            ImgurScrapePics.pwWriter = pwWriter;
+            if(!sURL.contains("imgur")){
                 throw new IllegalArgumentException(sURL + " is not an imgur link. Failing program.");
             }
-            oWebPage = WebPage.getWebPage(sURL);
+            init(sURL);
         }catch (Exception ex){
             Print.writeERRWithTimeStamp("ImgurScrapePics(Constructor) failed to initialize...", ex, pwWriter);
         }
+    }
+
+    public void init(String sURL) throws IOException{
+        oWebPage = WebPage.getWebPage(sURL);
     }
 
     public boolean ScrapeImages(){
@@ -40,7 +40,6 @@ public class ImgurScrapePics extends Scraper {
         String sImageURL = "";
         Elements leImageElements = null;
 
-
         try{
             leImageElements = oWebPage.getElementsByTag("img");
             iNumImages = 0;
@@ -48,22 +47,24 @@ public class ImgurScrapePics extends Scraper {
 
             //Get image URLS
             for(Element image: leImageElements){
-                sImageURL = image.attr("src").replace("//", "") + ".jpg";
+                sImageURL = image.attr("src").replace("//", "");
                 sImageURL = "http://" + sImageURL.replace("b.jpg", ".jpg");
-                if(sImageURL.indexOf("pixel.quantserve.com") == -1 && sImageURL.indexOf("/images/loaders/ddddd1_181817/48.gif") == -1){
+                if(!sImageURL.contains("pixel.quantserve.com") && !sImageURL.contains("/images/loaders/ddddd1_181817/48.gif")) {
                     imagesScraped.add(sImageURL);
                     WebPage.getImage(sImageURL);
                     iNumImages++;
                     iNumElements++;
-                    Print.writelnWithTimeStamp(iNumElements + ": Added " + sImageURL, pwWriter);
+                    Print.writelnWithTimeStamp(iNumElements + "/" + leImageElements.size() + ": Added " + sImageURL, pwWriter);
                 } else{
                     iNumElements++;
                     Print.writelnWithTimeStamp(iNumElements + ": Skipped non-image " + sImageURL, pwWriter);
                 }
             }
+            bResult = true;
 
             //Ensure that all images were scraped
             if(iNumImages != imagesScraped.size()) {
+                bResult = false;
                 throw new IllegalStateException("The number of images found is not equal to the number of images scraped");
             }
 

@@ -7,6 +7,7 @@ import java.util.ArrayList;
  */
 public abstract class Scraper {
     public ArrayList<String> imagesScraped = new ArrayList<String>();
+
     public abstract boolean ScrapeImages();
 
     public int getNumImages(){

@@ -2,13 +2,13 @@ package Utilites;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
  * Created by Andy on 8/18/2014.
  */
 public class Print {
-
     //Console Prints
     public static void println(Object oMsg){
         System.out.println(oMsg.toString());
@@ -38,25 +38,25 @@ public class Print {
         return new PrintWriter(sFileName + ("_" + Calendar.DATE + "_" + Calendar.getInstance().getTime()).replace(":", "_").replace(" ", "-"));
     }
     public static void writeln(String sMsg, PrintWriter pwWriter){
-        pwWriter.write(sMsg);
+        pwWriter.write(sMsg + "\n");
         System.out.println(sMsg);
         pwWriter.flush();
     }
 
     public static void writeln(int iMsg, PrintWriter pwWriter){
-        pwWriter.write(iMsg);
+        pwWriter.write(iMsg + "\n");
         System.out.println(iMsg);
         pwWriter.flush();
     }
 
     public static void writelnWithTimeStamp(String sMsg, PrintWriter pwWriter){
-        pwWriter.write(Calendar.DATE + " " + Calendar.getInstance().getTime() + ": " + sMsg);
+        pwWriter.write(Calendar.DATE + " " + Calendar.getInstance().getTime() + ": " + sMsg + "\n");
         pwWriter.flush();
         System.out.println(Calendar.DATE + " " + Calendar.getInstance().getTime() + ": " + sMsg);
     }
 
     public static void writeERRWithTimeStamp(String sMsg, Exception ex, PrintWriter pwWriter){
-        pwWriter.write("ERROR: " + Calendar.DATE + " " + Calendar.getInstance().getTime() + ": " + sMsg + "\n" + ex);
+        pwWriter.write("ERROR: " + Calendar.DATE + " " + Calendar.getInstance().getTime() + ": " + sMsg + "\n" + ex.getStackTrace());
         System.out.println("ERROR: " + Calendar.DATE + " " + Calendar.getInstance().getTime() + ": " + sMsg + "\n" + ex);
     }
 }

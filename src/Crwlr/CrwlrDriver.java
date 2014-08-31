@@ -1,13 +1,9 @@
 package Crwlr;
 import Utilites.*;
 import CrwlrBaseClass.*;
-import com.thoughtworks.selenium.Selenium;
 import org.jsoup.nodes.Document;
-import org.openqa.selenium.server.SeleniumServer;
 
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 
 /**
@@ -16,8 +12,11 @@ import java.util.ArrayList;
 public class CrwlrDriver {
     public static PrintWriter pwStdPrint = null;
     public static final String sFileName = "TEST";
-    public static final String sURL = "http://www.imgur.com";
-    public static final int iRunType = 0; //0 = Imgur.com
+    public static String sURL = "";
+    public static enum RunTypes{
+        Imgur, Reddit
+    }
+    public static RunTypes pRunType = RunTypes.Reddit;
     public static Scraper scraper = null;
 
     public static void main(String args[]){
@@ -26,6 +25,7 @@ public class CrwlrDriver {
             pwStdPrint = Print.getPrintWriter(sFileName);
             Print.writeln(sFileName + ": LOG STARTED AT " + DateTime.getDateTime(), pwStdPrint);
             Server _server = null;
+            boolean bResult = false;
 
             //Boot server
             Print.writelnWithTimeStamp("Booting Selenium server...", pwStdPrint);
@@ -33,19 +33,42 @@ public class CrwlrDriver {
             _server.startSeleniumServer();
             Print.writelnWithTimeStamp("Selenium server booted!...", pwStdPrint);
 
-            //Fetch URL
+            //Set URL
+            switch (pRunType){
+                case Imgur:
+                    sURL = "http://imgur.com";
+                    break;
+                case Reddit:
+                    sURL = "http://www.reddit.com";
+                    break;
+            }
+
+            //Fetch web page
             Print.writelnWithTimeStamp("Fetching " + sURL + "...", pwStdPrint);
             Document oWebpage = WebPage.getWebPage(sURL);
 
             if(oWebpage == null){
-                throw new IllegalStateException("oWebPage returned null.");
+                throw new IllegalStateException("Failed to fetch " + sURL + ".");
             }
             Print.writelnWithTimeStamp(sURL + " loaded...", pwStdPrint);
-            switch (iRunType) {
-                case 0:
-                    scraper = new ImgurScrapePics(pwStdPrint, "http://imgur.com/");
-                    scraper.ScrapeImages();
+            switch (pRunType) {
+                case Imgur:
+                    scraper = new ImgurScrapePics(pwStdPrint, sURL);
+                    bResult = scraper.ScrapeImages();
                     Print.writelnWithTimeStamp("Number of scraped images: " + scraper.getNumImages(), pwStdPrint);
+                    break;
+                case Reddit:
+                    scraper = new RedditScrapePics(pwStdPrint, sURL);
+                    bResult = scraper.ScrapeImages();
+                    Print.writelnWithTimeStamp("Number of scraped images: " + scraper.getNumImages(), pwStdPrint);
+                    break;
+            }
+            WebPage.selenium.shutDownSeleniumServer();
+            pwStdPrint.close();
+            if(!bResult){
+                Print.writelnWithTimeStamp("Program failed...", pwStdPrint);
+            }else{
+                Print.writelnWithTimeStamp("Program succeeded...", pwStdPrint);
             }
             Print.writelnWithTimeStamp("Program ended...", pwStdPrint);
 
